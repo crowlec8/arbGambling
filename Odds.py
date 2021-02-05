@@ -6,7 +6,7 @@ region = "eu"
 mkt = "h2h"
 totalProfits = 0.0
 totalStakes = 0
-#getSports = "https://api.the-odds-api.com/v3/sports/?apiKey="+apiKey
+getSports = "https://api.the-odds-api.com/v3/sports/?apiKey="+apiKey
 
 def profits(setOfOdds, stakes, profitList, loop):
     firstOdd = setOfOdds[0]
@@ -46,9 +46,9 @@ def isBetterOdd(siteOdd, siteName, sitesList, bestOdds, loop):
         sitesList[loop][1] = siteName
 
 def sports_keys():
-    #response = requests.get(getSports)
-    #sports = response.json()
-    sports = json.load(open('APISports.json'))
+    response = requests.get(getSports)
+    sports = response.json()
+    #sports = json.load(open('APISports.json'))
     data = sports['data']
     sportsKeys = []
     for sportsGroups in data:
@@ -56,11 +56,10 @@ def sports_keys():
     return sportsKeys
 
 def getUrl(sports):
-    print(sports)
-    #getOdds = "https://api.the-odds-api.com/v3/odds/?apiKey={}&sport={}&region={}&mkt={}".format(apiKey, sports, region ,mkt)
-    #response = requests.get(getOdds)
-    #oddsPage = response
-    oddsPage = json.load(open('APIOdds.json'))
+    getOdds = "https://api.the-odds-api.com/v3/odds/?apiKey={}&sport={}&region={}&mkt={}".format(apiKey, sports, region ,mkt)
+    response = requests.get(getOdds)
+    oddsPage = response.json()
+    #oddsPage = json.load(open('APIOdds.json'))
     data = oddsPage['data'] 
     teamsList = []
     sitesList = [["", ""]]
@@ -87,7 +86,11 @@ def getUrl(sports):
         loop = loop + 1
     stakes.pop()
     profitList.pop()
-    loop = 0 
+    loop = 0
+    for setOfProfits in profitList:
+        if(setOfProfits[0]>=0) & (setOfProfits[1]>=0):
+            print(sports)
+            quit()
     global totalProfits
     global totalStakes
     for setOfProfits in profitList:
@@ -101,11 +104,12 @@ def getUrl(sports):
             print("And bet $" + str(stakes[loop][1]) + " on the " + teamsList[loop][1] + " with " + sitesList[loop][1] + " at " + str(setOfOdds[1]))
             print("If " + teamsList[loop][0] + " win, your profit is $" + str(round(profitList[loop][0], 2)) + " and if " + teamsList[loop][1] + " win, your profit is $" + str(round(profitList[loop][1], 2)) + "\n")
         loop = loop + 1
+    breakpnt = 0
     
 
 sportsKeys = sports_keys()
-#for sports in sportsKeys:
-getUrl(sportsKeys[3])
+for sports in sportsKeys:
+    getUrl(sports)
 print("Spend $" + str(totalStakes) + " and your total profit avaiable right now = $" + str(round(totalProfits, 2)))
 ret = (totalProfits/totalStakes) * 100
 print("Return on investments is roughly " + str(round(ret, 2)) + " percent right now")
