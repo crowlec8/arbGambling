@@ -1,12 +1,11 @@
 from pip._vendor import requests
 import json
 
-apiKey = "ca1ebcca6225cd2a2b3d2b6dcb3d6c5f"
 region = "eu"
 mkt = "h2h"
 totalProfits = 0.0
 totalStakes = 0
-#getSports = "https://api.the-odds-api.com/v3/sports/?apiKey="+apiKey
+getSports = "https://api.the-odds-api.com/v3/sports/?apiKey="+apiKey
 
 def profits(setOfOdds, stakes, profitList, marginList, loop):
     firstOdd = setOfOdds[0]
